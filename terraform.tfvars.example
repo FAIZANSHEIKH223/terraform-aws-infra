@@ -1,0 +1,21 @@
+project_name = "terraform-demo"
+
+environment = "dev"
+
+aws_region = "ap-south-1"
+
+ami_id = "ami-xxxxxxxxxxxxxxxxx"
+
+instance_type = "t2.micro"
+
+key_name = "terraform-key"
+
+subnet_id = "subnet-xxxxxxxx"
+
+security_group_ids = [
+  "sg-xxxxxxxx"
+]
+
+bucket_name = "faizan-devops-103282536465"
+
+bucket_versioning = true
