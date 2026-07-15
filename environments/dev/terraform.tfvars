@@ -2,18 +2,18 @@ project_name = "terraform-demo"
 
 environment = "dev"
 
-aws_region = "ap-south-1"
+aws_region = "us-east-1"
 
-ami_id = "ami-xxxxxxxxxxxxxxxx"
+ami_id = "ami-052355af2a014bd2c"
 
 instance_type = "t2.micro"
 
 key_name = "terraform-key"
 
-subnet_id = "subnet-xxxxxxxx"
+subnet_id = "subnet-08fda56e0a6345f85"
 
 security_group_ids = [
-  "sg-xxxxxxxx"
+  "sg-03f8d28fe8bb81736"
 ]
 
 bucket_name = "terraform-demo-dev-001"
