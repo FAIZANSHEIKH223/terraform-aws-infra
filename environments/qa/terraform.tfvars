@@ -8,7 +8,7 @@ ami_id = "ami-052355af2a014bd2c"
 
 instance_type = "t2.micro"
 
-key_name = "terraform-key"
+key_name = "mykey2.pem"
 
 subnet_id = "subnet-08fda56e0a6345f85"
 

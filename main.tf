@@ -2,8 +2,8 @@ module "ec2" {
 
   source = "./modules/ec2"
 
-  project_name       = var.project_name
-  environment        = var.environment
+  project_name = var.project_name
+  environment  = var.environment
 
   ami_id             = var.ami_id
   instance_type      = var.instance_type
