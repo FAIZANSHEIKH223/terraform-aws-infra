@@ -43,14 +43,20 @@ pipeline {
 
             steps {
 
-                sh """
-                terraform init \
-                -reconfigure \
-                -backend-config=backend-${ENVIRONMENT}.conf
-                """
+                withCredentials([
+                    [
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws-creds'
+                    ]
+                ]) {
 
+                    sh """
+                    terraform init \
+                    -reconfigure \
+                    -backend-config=backend-${ENVIRONMENT}.conf
+                    """
+                }
             }
-
         }
 
         stage('Terraform Validate') {
