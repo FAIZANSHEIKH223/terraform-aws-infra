@@ -119,7 +119,15 @@ pipeline {
 
         stage('Terraform Output') {
             steps {
-                sh 'terraform output'
+                withCredentials([
+                    [
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws-creds'
+                    ]
+                ]) {
+
+                    sh 'terraform output'
+                }
             }
         }
 
