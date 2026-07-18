@@ -40,9 +40,17 @@ pipeline {
         }
 
         stage('Terraform Init') {
+
             steps {
-                sh 'terraform init'
+
+                sh """
+                terraform init \
+                -reconfigure \
+                -backend-config=backend-${ENVIRONMENT}.conf
+                """
+
             }
+
         }
 
         stage('Terraform Validate') {
