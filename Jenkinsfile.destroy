@@ -1,0 +1,97 @@
+pipeline {
+
+    agent any
+
+    parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'qa', 'prod'],
+            description: 'Select Environment'
+        )
+    }
+
+    environment {
+        AWS_DEFAULT_REGION = 'us-east-1'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-creds'
+                ]]) {
+
+                    sh '''
+                    terraform init
+                    '''
+                }
+            }
+        }
+
+        stage('Terraform Validate') {
+            steps {
+                sh 'terraform validate'
+            }
+        }
+
+        stage('Terraform Destroy Plan') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-creds'
+                ]]) {
+
+                    sh """
+                    terraform plan \
+                    -destroy \
+                    -var-file=environments/${ENVIRONMENT}/terraform.tfvars \
+                    -out=destroy.tfplan
+                    """
+                }
+            }
+        }
+
+        stage('Manual Approval') {
+            steps {
+                input message: "Destroy ${ENVIRONMENT} Environment?"
+            }
+        }
+
+        stage('Terraform Destroy') {
+            steps {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-creds'
+                ]]) {
+
+                    sh '''
+                    terraform apply -auto-approve destroy.tfplan
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: 'destroy.tfplan', fingerprint: true
+            cleanWs()
+        }
+
+        success {
+            echo 'Infrastructure destroyed successfully.'
+        }
+
+        failure {
+            echo 'Destroy failed.'
+        }
+    }
+}
